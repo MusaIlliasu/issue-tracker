@@ -4,7 +4,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const loading = () => {
 
   return (
-    <>
+    <div className="w-full md:w-[450px] mx-auto">
         <h1 className="w-[200] font-semibold mb-2"><Skeleton /></h1>
         <div className="flex justify-start items-center gap-4 mb-6">
           <Skeleton  width={200} />
@@ -18,7 +18,7 @@ const loading = () => {
           <Skeleton width={100} />
           <Skeleton width={100} />
         </div>
-    </>
+    </div>
   )
 }
 

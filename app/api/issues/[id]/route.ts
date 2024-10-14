@@ -1,31 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 
-export const GET = async (request: NextRequest, params: { id: string }) => {
+export const PATCH = async (request: NextRequest, { params }: { params: { id: string  } }) => {
+    const body = await request.json();
 
     const issue = await prisma.issue.findUnique({
         where: { id: parseInt(params.id) }
     });
-
     if(!issue){ 
         return NextResponse.json({
             status: false,
             message: "Issue not found"
         }, { status: 400 }); 
     }
+
+    const updatedIssue = await prisma.issue.update({
+        where: { id: parseInt(params.id) },
+        data: {
+            title: body.title,
+            description: body.description
+        }
+    });
     return NextResponse.json({ 
         status: true, 
-        message: "Issue fetched successfully",
-        data: issue
+        message: "Issue updated successfully",
+        data: updatedIssue
     });
 }
 
-export const DELETE = async (params: { id: string }) => {
-    console.log("Id before: ", params.id);
+export const DELETE = async (request: NextRequest, { params }: { params: { id: string  } }) => {
+
     const issue = await prisma.issue.findUnique({
         where: { id: parseInt(params.id) }
     });
-
     if(!issue){ 
         return NextResponse.json({
             status: false,
@@ -33,11 +40,9 @@ export const DELETE = async (params: { id: string }) => {
         }, { status: 400 }); 
     }
 
-    console.log("Id during delete: ", params.id);
     await prisma.issue.delete({
         where: { id: parseInt(params.id) }
     });
-
     return NextResponse.json({ 
         status: true, 
         message: "Issue deleted successfully"

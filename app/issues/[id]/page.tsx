@@ -14,7 +14,7 @@ const IssuePage = async ({ params }: { params: { id: string}}) => {
     if(!issue){ return <p className="text-center text-red-600 py-4">Issue not found</p> }
     
   return (
-    <>
+    <div className="w-full md:w-[450px] mx-auto">
         <h1 className="font-semibold mb-2">{issue.title}</h1>
         <div className="flex justify-start items-center gap-4 mb-6">
           <Badge status={issue.status} />
@@ -25,10 +25,10 @@ const IssuePage = async ({ params }: { params: { id: string}}) => {
         </div>
 
         <div className="flex justify-start items-center gap-4">
-          <Link href={`/issues/${issue.id}/update`} className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 text-white transition-colors">Update</Link>
+          <Link href={`/issues/${issue.id}/edit`} className="py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 text-white transition-colors">Edit</Link>
           <DeleteButton id={issue.id} />
         </div>
-    </>
+    </div>
   )
 }
 
