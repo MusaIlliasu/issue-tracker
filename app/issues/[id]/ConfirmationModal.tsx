@@ -19,11 +19,7 @@ const ConfirmationModal = ({show, issueId, handleClose}: Props) => {
 
         try {
             setLoading(true);
-            const { data } = await axios.delete(`/api/xissues/${issueId}`, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            const { data } = await axios.delete(`/api/issues/${issueId}`);
             setLoading(false);
             if(data.status){
                 router.push("/issues");
@@ -34,7 +30,6 @@ const ConfirmationModal = ({show, issueId, handleClose}: Props) => {
             return setError(data.message || data.error);
             
         } catch (error: any) {
-            console.log(error.response);
             setLoading(false);
             return setError(error.response ? error.response.data?.error || error.response.statusText  : error.message);
         }

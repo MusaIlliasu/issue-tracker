@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
+import { authenticated } from "../../utils";
 
 export const PATCH = async (request: NextRequest, { params }: { params: { id: string  } }) => {
+    const isAuthenticated = await authenticated();
+    if(!isAuthenticated){
+        return NextResponse.json({
+            status: false,
+            message: "Access denied"
+        }, { status: 401 });
+    }
+    
     const body = await request.json();
-
     const issue = await prisma.issue.findUnique({
         where: { id: parseInt(params.id) }
     });
@@ -29,6 +37,13 @@ export const PATCH = async (request: NextRequest, { params }: { params: { id: st
 }
 
 export const DELETE = async (request: NextRequest, { params }: { params: { id: string  } }) => {
+    const isAuthenticated = await authenticated();
+    if(!isAuthenticated){
+        return NextResponse.json({
+            status: false,
+            message: "Access denied"
+        }, { status: 401 });
+    }
 
     const issue = await prisma.issue.findUnique({
         where: { id: parseInt(params.id) }

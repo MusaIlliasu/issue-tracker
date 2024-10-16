@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
+import { authenticated } from "../utils";
 
 export const GET = async () => {
     
@@ -12,6 +13,13 @@ export const GET = async () => {
 }
 
 export const POST = async (request: NextRequest) => {
+    const isAuthenticated = await authenticated();
+    if(!isAuthenticated){
+        return NextResponse.json({
+            status: false,
+            message: "Access denied"
+        }, { status: 401 });
+    }
 
     const body = await request.json();
     const errors = [];
