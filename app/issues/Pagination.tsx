@@ -26,8 +26,8 @@ const Pagination = ({ pageSize, currentPage, itemCount }: Props) => {
             <p>Page {currentPage} of {totalPages}</p>
 
             <div className="flex justify-end items-center gap-3">
-                <button disabled={currentPage === 1} onClick={() => handleChange(currentPage - 1)} className="bg-blue-500 text-white rounded hover:bg-blue-600 py-1 px-3 transition-colors">Previous</button>
-                <button disabled={currentPage === totalPages} onClick={() => handleChange(currentPage + 1)} className="bg-blue-500 text-white rounded hover:bg-blue-600 py-1 px-3 transition-colors">Next</button>
+                <button disabled={currentPage === 1} onClick={() => handleChange(currentPage - 1)} className={`${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white rounded py-1 px-3 transition-colors`}>Previous</button>
+                <button disabled={currentPage === totalPages} onClick={() => handleChange(currentPage + 1)} className={`${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}  text-white rounded py-1 px-3 transition-colors"`}>Next</button>
             </div>
         </div>
     )

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 import { AiFillBug } from "react-icons/ai"
 import Spinner from '../issues/[id]/Spinner';
+import Image from 'next/image';
 
 const NavBar = () => {
     const { status, data: session } = useSession();
@@ -40,7 +41,7 @@ const NavBar = () => {
                         <Link href="/" className={`font-semibold text-gray-400 ${pathname.startsWith("/dashboard") ? "text-gray-600" : "hover:text-gray-600"} transition-colors`}>Dashboard</Link>
                         
                         <span className='inline-block w-[40px] h-[40px] border rounded-full overflow-hidden'>
-                            <img src={session.user!.image as string} alt="Profile_Image" className="w-full h-full object-cover" />
+                            <Image src={session.user!.image!} fill alt="Profile_Image" />
                         </span>
 
                         <Link href="/api/auth/signout" className="font-semibold text-gray-400 hover:text-gray-600 transition-colors">Logout</Link>
