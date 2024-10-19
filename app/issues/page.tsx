@@ -3,9 +3,33 @@ import Link from "next/link";
 import Badge from "./Badge";
 import Pagination from "./Pagination";
 import Filtering from "./Filtering";
+import { Issue, Status } from "@prisma/client";
 
-const Issues = async () => {
-  const issues = await prisma.issue.findMany();
+interface Props {
+  searchParams: { 
+    status: Status; 
+    orderBy: keyof Issue;
+  }
+}
+
+const Issues = async ({ searchParams }: Props) => {
+  const statuses = Object.values(Status);
+  const status = statuses.includes(searchParams.status) ? searchParams.status : undefined;
+
+  const columns: { label: string; value: keyof Issue }[] = [
+    { label: "Issue", value: "title" },
+    { label: "Status", value: "status" },
+    { label: "Created At", value: "createdAt" }
+  ]
+
+  const orders = columns.map(column => column.value);
+  const orderBy = orders.includes(searchParams.orderBy) ? { [searchParams.orderBy]: "asc" } : undefined;
+  
+  const issues = await prisma.issue.findMany({ 
+    where: { status },
+    orderBy
+  });
+
 
   return (
     <>
@@ -25,19 +49,23 @@ const Issues = async () => {
               <table className="w-full border border-collapse whitespace-nowrap mb-4">
                 <thead>
                   <tr className="bg-gray-200">
-                    <th className="border py-2 px-4">S/N</th>
-                    <th className="border py-2 px-4">Issue</th>
-                    <th className="border py-2 px-4">Status</th>
-                    <th className="border py-2 px-4">Created At</th>
+                    {
+                      columns.map(column => (
+                        <th key={column.value} className="border py-2 px-4">
+                          <Link href={{ query: {...searchParams, orderBy: column.value }}}>
+                              {column.label}
+                          </Link>
+                        </th>
+                      ))
+                    }
                     <th className="border py-2 px-4"></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {
-                    issues.map((issue, index) => (
+                    issues.map(issue => (
                       <tr key={issue.id}>
-                        <td className="border py-2 px-4">{index + 1}</td>
                         <td className="border py-2 px-4">{issue.title}</td>
                         <td className="border py-2 px-4"><Badge status={issue.status} /> </td>
                         <td className="border py-2 px-4">{new Date(issue.createdAt).toDateString()}</td>
