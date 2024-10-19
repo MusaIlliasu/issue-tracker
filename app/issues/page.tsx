@@ -9,6 +9,7 @@ interface Props {
   searchParams: { 
     status: Status; 
     orderBy: keyof Issue;
+    page: string;
   }
 }
 
@@ -21,15 +22,20 @@ const Issues = async ({ searchParams }: Props) => {
     { label: "Status", value: "status" },
     { label: "Created At", value: "createdAt" }
   ]
-
   const orders = columns.map(column => column.value);
   const orderBy = orders.includes(searchParams.orderBy) ? { [searchParams.orderBy]: "asc" } : undefined;
+
+  const page = parseInt(searchParams.page) || 1;
+  const pageSize = 10;
   
   const issues = await prisma.issue.findMany({ 
     where: { status },
-    orderBy
+    orderBy,
+    skip: (page - 1) * pageSize,
+    take: pageSize
   });
 
+  const issueCount = await prisma.issue.count({ where: { status } });
 
   return (
     <>
@@ -77,9 +83,9 @@ const Issues = async ({ searchParams }: Props) => {
               </table>
 
               <Pagination 
-                pageSize={10}
-                currentPage={1}
-                itemCount={21}
+                pageSize={pageSize}
+                currentPage={page}
+                itemCount={issueCount}
               />
             </div>
           ) : (
